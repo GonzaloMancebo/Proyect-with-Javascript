@@ -2,12 +2,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const apiUrl = 'https://rickandmortyapi.com/api/character';
     let selectedItems = [];
 
+    // Conjunto fijo de precios
+    const fixedPrices = [19.99, 24.99, 14.99, 29.99, 34.99, 22.99, 18.99, 25.99, 20.99, 30.99];
+
     fetch(apiUrl)
         .then(response => response.json())
         .then(data => {
             const characters = data.results;
 
-            const characterHTML = characters.map(character => {
+            const characterHTML = characters.map((character, index) => {
+                // Asignar un precio fijo según el índice del personaje
+                const price = fixedPrices[index % fixedPrices.length].toFixed(2);
+
                 return `
                     <div class="character">
                         <img src="${character.image}" alt="${character.name}">
@@ -15,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <p>${character.species}</p>
                         <p>${character.status}</p>
                         <p>${character.gender}</p>
-                        <p>${character.origin.name}</p>
+                        <p class="price">$${price}</p> <!-- Mostrar el precio fijo -->
                         <button type="button" class="more">+</button>
                         <p class="counter">0</p> 
                         <button type="button" class="less">-</button>
@@ -83,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     species: character.querySelector('p:nth-of-type(2)').textContent,
                     status: character.querySelector('p:nth-of-type(3)').textContent,
                     gender: character.querySelector('p:nth-of-type(4)').textContent,
-                    origin: character.querySelector('p:nth-of-type(5)').textContent,
+                    price: character.querySelector('.price').textContent, 
                     quantity: count
                 });
             }

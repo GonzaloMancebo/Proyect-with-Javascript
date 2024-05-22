@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', function() {
     function mostrarCarrito() {
         // Recuperar los elementos seleccionados del almacenamiento local
@@ -8,17 +9,21 @@ document.addEventListener('DOMContentLoaded', function() {
         if (selectedItems && selectedItems.length > 0) {
             // Limpiar el contenido anterior del carrito
             seleccionCarrito.innerHTML = '';
+            let total = 0; // Variable para calcular el total
 
             selectedItems.forEach(item => {
+                const price = parseFloat(item.price.replace('$', ''));
+                const subtotal = price * item.quantity;
+
                 const itemElement = document.createElement('div');
                 itemElement.classList.add('seleccion-item');
                 itemElement.innerHTML = `
                     <p>Nombre: ${item.name}</p>
                     <p>Especie: ${item.species}</p>
                     <p>Estado: ${item.status}</p>
-                    <p>Género: ${item.gender}</p>
-                    <p>Origen: ${item.origin.name}</p>
+                    <p>Precio: ${item.price}</p>
                     <p>Cantidad: ${item.quantity}</p>
+                    <p>Subtotal: $${subtotal.toFixed(2)}</p>
                     <button class="btn-delete">Borrar</button>
                 `;
                 seleccionCarrito.appendChild(itemElement);
@@ -33,17 +38,36 @@ document.addEventListener('DOMContentLoaded', function() {
                         mostrarCarrito();
                     }
                 });
+
+                // Actualizar el total después de añadir el elemento
+                total += subtotal;
             });
+
+            // Mostrar el total
+            const totalElement = document.createElement('div');
+            totalElement.classList.add('total');
+            totalElement.innerHTML = `<p>Total: $${total.toFixed(2)}</p>`;
+            seleccionCarrito.appendChild(totalElement);
+
         } else {
-            // Si no hay elementos mostrar alerta
-            alert('No hay elementos seleccionados en el carrito.');
-            window.history.back();
+            // Si no hay elementos mostrar alerta con SweetAlert
+            Swal.fire("¡Alerta!", "No hay elementos seleccionados en el carrito.", "warning")
+                .then((value) => {
+                    if (value) {
+                        window.history.back();
+                    }
+                });
         }
 
         const comprarButton = document.getElementById('comprar-btn');
         comprarButton.addEventListener('click', function() {
-            alert('¡Compra realizada con éxito!');
-            window.history.back();
+            // Mostrar alerta con SweetAlert
+            Swal.fire("¡Éxito!", "¡Compra realizada con éxito!", "success")
+                .then((value) => {
+                    if (value) {
+                        window.history.back();
+                    }
+                });
         });
     }
 
